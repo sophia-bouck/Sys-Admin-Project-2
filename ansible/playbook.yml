@@ -1,3 +1,5 @@
+# playbook.yml - v1.0 - Configure Minecraft server
+# Updated 6/9/2025 Sophia Bouck
 ---
 - name: Configure Minecraft server
   hosts: minecraft

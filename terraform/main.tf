@@ -1,3 +1,5 @@
+# main.tf - v1.0 - Provision Minecraft EC2
+# Updated 6/9/2025 Sophia Bouck
 data "aws_iam_instance_profile" "lab" {
   name = "LabInstanceProfile"
 }
