@@ -1,0 +1,73 @@
+---
+- name: Configure Minecraft server
+  hosts: minecraft
+  gather_facts: false  # ❗️Disable this if the system has an old Python (like 3.7)
+  become: true
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3.8  # ✅ Must match what you installed on the EC2
+
+  tasks:
+    - name: Ensure Python 3.8 is installed
+      raw: |
+        sudo amazon-linux-extras enable python3.8
+        sudo yum clean metadata
+        sudo yum install -y python3.8
+      changed_when: false
+
+    - name: Switch Ansible to use python3.8
+      set_fact:
+        ansible_python_interpreter: /usr/bin/python3.8
+
+    - name: Install Java using yum command
+      command: yum install -y java-17-amazon-corretto
+      become: true
+
+    - name: Create minecraft directory
+      file:
+        path: /opt/minecraft
+        state: directory
+        owner: ec2-user
+        mode: "0755"
+
+    - name: Download Minecraft server jar
+      get_url:
+        url: https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar
+        dest: /opt/minecraft/server.jar
+        owner: ec2-user
+        mode: "0755"
+
+    - name: Accept EULA
+      copy:
+        dest: /opt/minecraft/eula.txt
+        content: "eula=true\n"
+        owner: ec2-user
+        mode: "0644"
+
+    - name: Create systemd unit for Minecraft
+      copy:
+        dest: /etc/systemd/system/minecraft.service
+        content: |
+          [Unit]
+          Description=Minecraft Server
+          After=network.target
+
+          [Service]
+          User=ec2-user
+          WorkingDirectory=/opt/minecraft
+          ExecStart=/usr/bin/java -Xmx1G -Xms1G -jar server.jar nogui
+          ExecStop=/bin/kill -SIGINT $MAINPID
+          Restart=on-failure
+
+          [Install]
+          WantedBy=multi-user.target
+        mode: "0644"
+
+    - name: Reload systemd
+      command: systemctl daemon-reexec
+
+    - name: Enable & start Minecraft service
+      systemd:
+        name: minecraft
+        state: started
+        enabled: true
