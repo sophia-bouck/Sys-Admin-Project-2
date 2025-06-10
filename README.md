@@ -20,8 +20,8 @@ To run this project, you need:
 
 ### AWS Environment
 
-- A running EC2 instance (Amazon Linux 2023) in a public subnet
-- Security Group with **TCP port 25565** open to your IP or 0.0.0.0/0
+- (After running Terraform this should be automatically added) A running EC2 instance (Amazon Linux 2023) in a public subnet
+- (After running Terraform this should be automatically added, good to check if troubleshooting) Security Group with **TCP port 25565** open to your IP or 0.0.0.0/0
 - `LabInstanceProfile` (attached during EC2 launch)
 
 ### Configuration
@@ -34,6 +34,7 @@ To run this project, you need:
 `cd sys-admin-project-2`
 2. Run Terraform
 `cd terraform terraform init terraform apply`
+Copy down the ip that is returned to add it to **inventory.ini** in the following step
 3. Configure the Ansible inventory
 Edit the **inventory.ini** file and replace the placeholder values:
 `[minecraft] <your-ec2-public-ip> ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh your-key.pem ansible_python_interpreter=/usr/bin/python3.8`
