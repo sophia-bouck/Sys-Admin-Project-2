@@ -2,7 +2,7 @@
 # Updated 6/9/2025 Sophia Bouck
 variable "aws_region" {
   type    = string
-  default = "us-east-1"
+  default = "us-west-2"
 }
 
 variable "instance_type" {
@@ -12,4 +12,9 @@ variable "instance_type" {
 
 variable "key_name" {
   type = string
+}
+
+variable "allowed_ip" {
+  description = "The IP range to allow SSH/Minecraft traffic from"
+  type        = string
 }

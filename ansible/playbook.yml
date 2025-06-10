@@ -1,4 +1,4 @@
-# playbook.yml - v1.0 - Configure Minecraft server
+# playbook.yml - v1.1 - Configure Minecraft server
 # Updated 6/9/2025 Sophia Bouck
 ---
 - name: Configure Minecraft server
@@ -7,19 +7,9 @@
   become: true
 
   vars:
-    ansible_python_interpreter: /usr/bin/python3.8  
+    ansible_python_interpreter: /usr/bin/python3  
 
   tasks:
-    - name: Ensure Python 3.8 is installed
-      raw: |
-        sudo amazon-linux-extras enable python3.8
-        sudo yum clean metadata
-        sudo yum install -y python3.8
-      changed_when: false
-
-    - name: Switch Ansible to use python3.8
-      set_fact:
-        ansible_python_interpreter: /usr/bin/python3.8
 
     - name: Install Java using yum command
       command: yum install -y java-17-amazon-corretto
